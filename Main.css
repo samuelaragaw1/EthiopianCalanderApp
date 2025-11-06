@@ -1,0 +1,96 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    position: absolute;
+    width: 100%;
+    overflow-x: hidden;
+}
+.container0 {
+    position: absolute;
+    top: 1rem;
+    left: -100%;
+    background-color: rgba(0, 128, 0, 0.297);
+    margin-top: 10vh;
+    height: 80vh;
+    width: 80vw;
+    margin-left: 10vw;
+    border: 1px solid black;
+    box-shadow: 0px 0px 2px;
+}
+.container1 {
+    position: absolute;
+    top: 1rem;
+    background-color: rgba(0, 128, 0, 0.297);
+    margin-top: 10vh;
+    height: 80vh;
+    width: 80vw;
+    margin-left: 10vw;
+    border: 1px solid black;
+    box-shadow: 0px 0px 2px;
+}
+.container2 {
+    position: absolute;
+    top: 1rem;
+    left: 100%;
+    background-color: rgba(0, 128, 0, 0.297);
+    margin-top: 10vh;
+    height: 80vh;
+    width: 80vw;
+    margin-left: 10vw;
+    border: 1px solid black;
+    box-shadow: 0px 0px 2px;
+}
+@keyframes slide_right {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(125%);
+    }
+}
+@keyframes slide_left {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(-125%);
+    }
+}
+#control {
+    width: 100%;
+}
+button:first-child {
+    margin: 2rem 0rem 0rem 4%;
+}
+button:nth-child(3) {
+    margin: 2rem 0rem 0rem 40%;
+}
+#date_output {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 35%;
+}
+.month {
+    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
+    width: 11.428571429vw;
+    height: 13.333333333vh;
+    border: 1px solid black;
+}
+.month > p:first-child {
+    position:  absolute;
+    left: 4vw;
+}
+.month > p:nth-child(2) {
+    position:  absolute;
+    left: 4.75vw;
+    top: 4vh;
+}
+.month > p:nth-child(3) {
+    position:  absolute;
+    left: 4vw;
+    top: 8vh;
+}
