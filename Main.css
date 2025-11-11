@@ -94,3 +94,12 @@ button:nth-child(3) {
     left: 4vw;
     top: 8vh;
 }
+.current_date_style {
+    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
+    width: 11.428571429vw;
+    height: 13.333333333vh;
+    border: 1px solid black;
+    background-color: rgb(75, 196, 38);
+}

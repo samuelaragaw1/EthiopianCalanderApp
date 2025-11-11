@@ -5,6 +5,7 @@ let element_2 = document.querySelector("#two");
 let ele_arry = [element_0, element_1, element_2];
 let ele_index = [0, 1, 2];
 let ethio_month = ["መስከረም", "ጥቅምት", "ኅዳር", "ታህሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+
 //grigorian calander parameters
 let grigorian = new Date();
 let g_y = grigorian.getFullYear();
@@ -14,12 +15,10 @@ let date_str = "9,11," + g_y;
 let date_at_sep11 = new Date(date_str);
 let e_leap = false;
 
-
-
 //ethiopian calander parameters
 let e_y;
 let e_m;
-let e_d;
+
 //calculate the year
 if (g_m >= 9 || (g_m == 9 && g_d >= 11)) {
     e_y = g_y - 7;
@@ -34,8 +33,9 @@ let date = Math.floor((days)%30 + 1);
 //calculate month
 let months = Math.floor(days/30) + 1;
 e_m = months;
-//date output
-createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 7);
+
+//frist render of each boxs
+createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 7, true, date);
 let date_output = ethio_month[months-1] + " " + date + " " + e_y;
 
 
@@ -74,6 +74,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
         e.remove();
     }
 
+    //ele_arry maniplation and animation of container
     for (var i = 0; i < ele_index.length; i++) {
         ele_index[i] = (ele_index[i] + 1) % 3;
     }
@@ -92,7 +93,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5,e_m==u_m, date);
     }, 600);
 
 });
@@ -109,6 +110,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
         e.remove();
     }
 
+    //ele_arry maniplation and animation of container
     for(var i = 0; i < ele_index.length; i++){
         if(ele_index[i] > 0){
             ele_index[i] = ele_index[i] - 1;
@@ -118,8 +120,8 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
         }
     }
     for (var i = 0; i < ele_index.length; i++) {
-        // Reset animation
-        ele_arry[i].style.animationName = "none";
+        
+        ele_arry[i].style.animationName = "none"; // Reset animation
         ele_arry[i].offsetHeight; // trigger reflow
 
         ele_arry[i].style.animationName = "slide_left";
@@ -132,14 +134,16 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5, e_m==u_m, date);
     }, 600);
 });
 //rendering each month
-function createElement(parent, pugme, month, year, pugme_number) {
+function createElement(parent, pugme, month, year, pugme_number, current_month, current_day) {
     let element_array = [];
     if (!pugme) {
         for(let i = 1;i < 8;i++) {
+            
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML = `<p>${month}</p>
@@ -150,8 +154,18 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333 + "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if((i == current_day) && current_month) {
+                element.classList.add("current_date_style");
+            }
+
+            // checking inner childern
+            checking_inner_children(element, month);
         }
         for(let i = 8;i < 15;i++){
+
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
@@ -162,8 +176,15 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333*2 + "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if(i == current_day && current_month) {
+                element.classList.add("current_date_style");
+            }
         }
         for(let i = 15;i < 22;i++){
+
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
@@ -174,8 +195,15 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333*3 + "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if(i == current_day && current_month) {
+                element.classList.add("current_date_style");
+            }           
         }
         for(let i = 22;i < 29;i++){
+
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
@@ -186,8 +214,15 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333*4 + "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if(i == current_day && current_month) {
+                element.classList.add("current_date_style");
+            }
         }
         for(let i = 29;i < 31;i++){
+
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
@@ -198,10 +233,17 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333*5 + "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if(i == current_day && current_month) {
+                element.classList.add("current_date_style");
+            }
         }
     }
     else {
         for(let i = 1;i < pugme_number;i++) {
+
+            //creating and adjusting an element
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML = `<p>${month}</p>
@@ -212,7 +254,19 @@ function createElement(parent, pugme, month, year, pugme_number) {
             element.style.top = 13.333333333+ "vh";
             parent.append(element);
             element_array.push(element);
+
+            //to stylize the current date
+            if(i == current_day && current_month) {
+                element.classList.add("current_date_style");
+            }
         }
     }
     return element_array;
+}
+function checking_inner_children(element, month) {
+    if (month == 2 || month == 4 || month == 9) {
+            element.firstElementChild.style.left = "7vw";
+            element.firstElementChild.style.backgroudColor = "red";
+        }
+    return element;
 }
