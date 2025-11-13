@@ -1,3 +1,3 @@
-- implement the current date selector
+- implement the current date selector[Done]
 - adjust the position each month name
-  in the day box
+  in the day box[Done]

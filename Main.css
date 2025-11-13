@@ -79,6 +79,8 @@ button:nth-child(3) {
     width: 11.428571429vw;
     height: 13.333333333vh;
     border: 1px solid black;
+    left: calc(var(--horizontal) * 11.428571429vw);
+    top: calc(var(--vertical)*1vh);
 }
 .month > p:first-child {
     position:  absolute;
@@ -102,4 +104,30 @@ button:nth-child(3) {
     height: 13.333333333vh;
     border: 1px solid black;
     background-color: rgb(75, 196, 38);
+}
+
+/*the month that apearace don't look good*/
+.month_shifted {
+    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
+    width: 11.428571429vw;
+    height: 13.333333333vh;
+    border: 1px solid black;
+    left: calc(var(--horizontal) * 11.428571429vw);
+    top: calc(var(--vertical)*1vh);
+}
+.month_shifted > p:first-child {
+    position:  absolute;
+    left: 4.3vw;
+}
+.month_shifted > p:nth-child(2) {
+    position:  absolute;
+    left: 4.75vw;
+    top: 4vh;
+}
+.month_shifted > p:nth-child(3) {
+    position:  absolute;
+    left: 4vw;
+    top: 8vh;
 }
