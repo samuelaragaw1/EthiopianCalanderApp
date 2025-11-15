@@ -5,6 +5,7 @@ let element_2 = document.querySelector("#two");
 let ele_arry = [element_0, element_1, element_2];
 let ele_index = [0, 1, 2];
 let ethio_month = ["መስከረም", "ጥቅምት", "ኅዳር", "ታህሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+let days_of_week = ["ሰኞ", "ማክሰኞ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሁድ"];
 
 //grigorian calander parameters
 let grigorian = new Date();
@@ -36,7 +37,7 @@ e_m = months;
 
 //frist render of each boxs
 createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 7, true, date, e_m-1);
-let date_output = ethio_month[months-1] + " " + date + " " + e_y;
+let date_output = `${ethio_month[months-1]} ${date} ${e_y}`;
 
 
 //user date year and month
@@ -70,7 +71,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     }
 
     //removing each element
-    for(e of document.querySelectorAll(".month")) {
+    for(e of document.querySelectorAll(".month, .month_shifted")) {
         e.remove();
     }
 
@@ -106,10 +107,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     }
 
     //removing previous elements
-    for(e of document.querySelectorAll(".month") ) {
-        e.remove();
-    }
-    for(e of document.querySelectorAll(".month_shifted") ) {
+    for(e of document.querySelectorAll(".month, .month_shifted") ) {
         e.remove();
     }
 
@@ -144,6 +142,24 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
 //rendering each month
 function createElement(parent, pugme, month, year, pugme_number, current_month, current_day, month_number) {
     let element_array = [];
+    for(let i = 0;i < 7;i++){
+        //adjusting parameters for css
+        let horizontal = i - 1;
+        let vertical = 0;
+
+        //creating and adjusting an element
+        let element = document.createElement("div");
+        element.className = "days_of_week"
+        element.innerHTML = `<p>${days_of_week[i]}</p>`; 
+
+        //defining varible for css
+        element.style.setProperty("--horizontal", horizontal);
+        element.style.setProperty("--vertical", vertical);
+
+        //adding into parent and array
+        parent.append(element);
+        element_array.push(element);
+    }
     if (!pugme) {
         for(let i = 1;i < 8;i++) {
             //ajusting parameters for css
