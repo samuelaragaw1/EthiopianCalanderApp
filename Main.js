@@ -16,10 +16,13 @@ let date_str = "9,11," + g_y;
 let date_at_sep11 = new Date(date_str);
 let e_leap = false;
 
+
 //ethiopian calander parameters
 let e_y;
 let e_m;
+let index_starting_day = grigorian.getDay() - 1;
 
+ 
 //calculate the year
 if (g_m >= 9 || (g_m == 9 && g_d >= 11)) {
     e_y = g_y - 7;
@@ -27,6 +30,7 @@ if (g_m >= 9 || (g_m == 9 && g_d >= 11)) {
 else {
     e_y = g_y - 8;
 }
+
 //calculate date
 let time_difference = grigorian.getTime() - date_at_sep11.getTime();
 let days = (((time_difference/1000)/60)/60)/24;
@@ -36,8 +40,12 @@ let months = Math.floor(days/30) + 1;
 e_m = months;
 
 //frist render of each boxs
-createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 7, true, date, e_m-1);
+createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 6, true, date, e_m-1);
 let date_output = `${ethio_month[months-1]} ${date} ${e_y}`;
+
+//calculating the starting index for renderinf each date  
+let index_starting_month = Math.abs((index_starting_day - (date - 1)))%7;
+console.log(index_starting_month);
 
 
 //user date year and month
@@ -61,6 +69,8 @@ window.addEventListener('resize', () => {
     }
 });
 document.querySelector("#date_output").innerHTML = "<div>" + date_output + "</div>"
+
+
 //when the next button is clicked
 document.querySelector("button:first-child").addEventListener('click', () => {
     //reducing user interface month
@@ -71,7 +81,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     }
 
     //removing each element
-    for(e of document.querySelectorAll(".month, .month_shifted")) {
+    for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week")) {
         e.remove();
     }
 
@@ -94,7 +104,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5,e_m==u_m, date, u_m-1);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6,e_m==u_m, date, u_m-1);
     }, 600);
 
 });
@@ -107,7 +117,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     }
 
     //removing previous elements
-    for(e of document.querySelectorAll(".month, .month_shifted") ) {
+    for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week") ) {
         e.remove();
     }
 
@@ -135,7 +145,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5, e_m==u_m, date, u_m-1);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6, e_m==u_m, date, u_m-1);
     }, 600);
 });
 
@@ -340,9 +350,19 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
 
 /*adjust the position each month name in the day box*/
 function adjust_p(element, month) {
-    console.log("working");
+    // console.log("working");
     if (month == 2 || month == 4 || month == 9) {
         element.classList.remove("month");
         element.classList.add("month_shifted");
+    }
+}
+function create_Element_using_index(pagume){
+    if(!pagume) {
+        for(let i = 1; i < 31;i++) {
+            
+        }
+    }
+    else{
+
     }
 }

@@ -2,4 +2,4 @@
 - adjust the position each month name
   in the day box[Done]
 - add day of the week[Done]
-- adjust the button
+- adjust the button[Done]
