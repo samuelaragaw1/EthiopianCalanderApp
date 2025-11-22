@@ -12,9 +12,28 @@ let grigorian = new Date();
 let g_y = grigorian.getFullYear();
 let g_m = grigorian.getMonth() + 1;
 let g_d = grigorian.getDate();
-let date_str = "9,11," + g_y;
-let date_at_sep11 = new Date(date_str);
 let e_leap = false;
+
+
+//check the ethiopian leap
+let date_at_sep11;
+if (g_m > 9 || (g_m = 9 && g_d >= 12)) {
+    if ((g_y - 8)%4 == 0){
+        date_at_sep11 = new Date(`9,12,${g_y}`);
+    }
+    else {
+        date_at_sep11 = new Date(`9,11,${g_y}`);
+    }
+}
+else {
+    if ((g_y - 9)%4 == 0){
+        date_at_sep11 = new Date(`9,12,${g_y}`);
+    }
+    else {
+        date_at_sep11 = new Date(`9,11,${g_y}`);
+    }
+}
+//check wether the grigorian date is before sept-11 or not
 
 
 //ethiopian calander parameters
@@ -31,20 +50,24 @@ else {
     e_y = g_y - 8;
 }
 
+
 //calculate date
 let time_difference = grigorian.getTime() - date_at_sep11.getTime();
 let days = (((time_difference/1000)/60)/60)/24;
 let date = Math.floor((days)%30 + 1);
+console.log(index_starting_day);
+
+
 //calculate month
 let months = Math.floor(days/30) + 1;
 e_m = months;
 
+
 //calculating the starting index for renderinf each date  
 let index_starting_month = Math.abs((index_starting_day - (date - 1)))%7;
-let index_ending_month = (30 + index_starting_month)%7 + 1;
-
-console.log(index_starting_month);
-console.log(index_ending_month);
+let index_ending_month = (30 + index_starting_month - 1)%7;
+// console.log(`ending day: ${index_ending_month}`);
+// console.log(`starting day: ${index_starting_month}`);
 
 
 //frist render of each boxs
@@ -75,7 +98,7 @@ window.addEventListener('resize', () => {
 document.querySelector("#date_output").innerHTML = "<div>" + date_output + "</div>"
 
 
-//when the next button is clicked
+//if the next privious is clicked
 document.querySelector("button:first-child").addEventListener('click', () => {
     //reducing user interface month
     u_m--;
@@ -88,6 +111,30 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week")) {
         e.remove();
     }
+
+
+    //adjusting index of starting  and ending of the month
+    if (u_m!==13) {
+        if (index_starting_month !== 0) {
+            index_ending_month = index_starting_month - 1;
+            index_starting_month = 7 - (30 + (6 - index_ending_month))%7;
+        }
+        else {
+            index_ending_month = 6;
+            index_starting_month = 7 - (30 + (6 - index_ending_month))%7;
+        }
+    }
+    else {
+        if (index_starting_month !== 0) {
+            index_ending_month = index_starting_month - 1;
+            index_starting_month = 7 - (5 + (6 - index_ending_month))%7;
+        }
+        else {
+            index_ending_month = 6;
+            index_starting_month = 7 - (5 + (6 - index_ending_month))%7;
+        }
+    }
+
 
     //ele_arry maniplation and animation of container
     for (var i = 0; i < ele_index.length; i++) {
@@ -108,10 +155,13 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6,e_m==u_m, date, u_m-1);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6,e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
     }, 600);
 
 });
+
+
+//if the next button is clicked
 document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     //increasing user interface month
     u_m++;
@@ -124,6 +174,32 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week") ) {
         e.remove();
     }
+
+
+    //setting the new indexs for starting and ending day of the month 
+    if (u_m!==13) {
+        if (index_ending_month !== 6) {
+            index_starting_month = index_ending_month + 1;
+            index_ending_month = (30 + index_starting_month - 1)%7;
+        }
+        else {
+            index_starting_month = 0;
+            index_ending_month = (30 + index_starting_month - 1)%7;
+        }
+    }
+    else {
+        if (index_ending_month !== 6) {
+            index_starting_month = index_ending_month + 1;
+            index_ending_month = (5 + index_starting_month - 1)%7;
+        }
+        else {
+            index_starting_month = 0;
+            index_ending_month = (5 + index_starting_month - 1)%7;
+        }
+    }
+    // console.log(`ending day: ${index_ending_month}`);
+    // console.log(`starting day: ${index_starting_month}`);
+
 
     //ele_arry maniplation and animation of container
     for(var i = 0; i < ele_index.length; i++){
@@ -149,7 +225,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6, e_m==u_m, date, u_m-1);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6, e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
     }, 600);
 });
 
@@ -170,6 +246,11 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
         //defining varible for css
         element.style.setProperty("--horizontal", horizontal);
         element.style.setProperty("--vertical", vertical);
+
+        //styling current day
+        if((i == current_day) && current_month) {
+                element.classList.add("current_date_style");
+        }
 
         //adding into parent and array
         parent.append(element);
@@ -336,12 +417,17 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element.style.setProperty("--horizontal", horizontal);
             element.style.setProperty("--vertical", vertical);
 
+            //styling current day
+            if((i == current_day) && current_month) {
+                element.classList.add("current_date_style");
+            }
+
             //adding to parent
             parent.append(element);
             element_array.push(element);
         }
         else {
-            for(let i = 0;i < ending_index - 1;i++){
+            for(let i = 0;i <= ending_index;i++){
                 //ajusting parameter for css
                 let horizontal = i;
                 let vertical = 13.333333333*5;
