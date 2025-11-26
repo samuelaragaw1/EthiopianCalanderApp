@@ -4,5 +4,6 @@
 - add day of the week[Done]
 - adjust the button[Done]
 - offseting the starting and ending day of the
-  month
+  month[Done]
+- adjust the highliter for current date
 - pugmue variation besed on year

@@ -117,22 +117,32 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     if (u_m!==13) {
         if (index_starting_month !== 0) {
             index_ending_month = index_starting_month - 1;
-            index_starting_month = 7 - (30 + (6 - index_ending_month))%7;
+            index_starting_month = (index_ending_month - (30 - 1) + 7*100)%7;
         }
         else {
             index_ending_month = 6;
-            index_starting_month = 7 - (30 + (6 - index_ending_month))%7;
+            index_starting_month = (index_ending_month - (30 - 1) + 7*100)%7;
         }
     }
     else {
+        //checking the pervious index is on monday
         if (index_starting_month !== 0) {
             index_ending_month = index_starting_month - 1;
-            index_starting_month = 7 - (5 + (6 - index_ending_month))%7;
         }
         else {
             index_ending_month = 6;
-            index_starting_month = 7 - (5 + (6 - index_ending_month))%7;
         }
+
+
+        //adjusting if we can draw it in single line 
+        //if it is greater than 4 then it drawable in single line
+        if (index_ending_month >= 4 ) {
+            index_starting_month = index_ending_month - 4;
+        }
+        //if it is less than 4 then it drawable in double line line
+        else {
+            index_starting_month = 7 - ((6 - index_ending_month) + 5)%7;
+        } 
     }
 
 
@@ -155,7 +165,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6,e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5,e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
     }, 600);
 
 });
@@ -225,7 +235,7 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     //adding day of months
     setTimeout( () => {
         let centerIndex = ele_index.indexOf(1);
-        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 6, e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
+        createElement(ele_arry[centerIndex], (u_m==13), ethio_month[u_m-1], u_y, 5, e_m==u_m, date, u_m-1, index_starting_month, index_ending_month);
     }, 600);
 });
 
@@ -233,6 +243,8 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
 function createElement(parent, pugme, month, year, pugme_number, current_month, current_day, month_number, starting_index, ending_index) {
     let counter = 1;
     let element_array = [];
+    console.log(`starting index: ${starting_index}`);
+    console.log(`ending index: ${ending_index}`);
     for(let i = 0;i < 7;i++){
         //adjusting parameters for css
         let horizontal = i - 1;
@@ -246,11 +258,6 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
         //defining varible for css
         element.style.setProperty("--horizontal", horizontal);
         element.style.setProperty("--vertical", vertical);
-
-        //styling current day
-        if((i == current_day) && current_month) {
-                element.classList.add("current_date_style");
-        }
 
         //adding into parent and array
         parent.append(element);
@@ -279,7 +286,7 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            if((i == current_day) && current_month) {
+            if((counter == current_day) && (e_m == current_month)) {
                 element.classList.add("current_date_style");
             }
 
@@ -418,7 +425,7 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element.style.setProperty("--vertical", vertical);
 
             //styling current day
-            if((i == current_day) && current_month) {
+            if((30 == current_day) && current_month) {
                 element.classList.add("current_date_style");
             }
 
@@ -459,34 +466,98 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
         }   
     }
     else {
-        for(let i = 1;i < pugme_number;i++) {
-            //ajusting parameters for css
-            let horizontal = i - 1;
-            let vertical = 13.333333333;
+        //two types of ending for it to render based on single line or double line
+        if (ending_index >= 4) {
+            for(let i = starting_index; i <= ending_index;i++) {
+                //ajusting parameters for css
+                let horizontal = i;
+                let vertical = 13.333333333;
 
-            //creating and adjusting an element
-            let element = document.createElement("div");
-            element.className = "month"
-            element.innerHTML = `<p>${month}</p>
-                                <p>${i}</p>                                     
-                                <p>${year}</p>`;
-            
-            //defining varible for css
-            element.style.setProperty("--horizontal", horizontal);
-            element.style.setProperty("--vertical", vertical);
+                //creating and adjusting an element
+                let element = document.createElement("div");
+                element.className = "month"
+                element.innerHTML = `<p>${month}</p>
+                                    <p>${counter++}</p>                                     
+                                    <p>${year}</p>`;
+                
+                //defining varible for css
+                element.style.setProperty("--horizontal", horizontal);
+                element.style.setProperty("--vertical", vertical);
 
-            //adding to parent
-            parent.append(element);
-            element_array.push(element);
+                //adding to parent
+                parent.append(element);
+                element_array.push(element);
 
-            //to stylize the current date
-            if(i == current_day && current_month) {
-                element.classList.add("current_date_style");
+                //to stylize the current date
+                if(i == current_day && current_month) {
+                    element.classList.add("current_date_style");
+                }
+
+                //if the month is shifted
+                adjust_p(element, month_number);
             }
-
-            //if the month is shifted
-            adjust_p(element, month_number);
         }
+        else {
+            //one rendering above
+            for(let i = starting_index; i <= 6;i++) {
+                //ajusting parameters for css
+                let horizontal = i;
+                let vertical = 13.333333333;
+
+                //creating and adjusting an element
+                let element = document.createElement("div");
+                element.className = "month"
+                element.innerHTML = `<p>${month}</p>
+                                    <p>${counter++}</p>                                     
+                                    <p>${year}</p>`;
+                
+                //defining varible for css
+                element.style.setProperty("--horizontal", horizontal);
+                element.style.setProperty("--vertical", vertical);
+
+                //adding to parent
+                parent.append(element);
+                element_array.push(element);
+
+                //to stylize the current date
+                if(i == current_day && current_month) {
+                    element.classList.add("current_date_style");
+                }
+
+                //if the month is shifted
+                adjust_p(element, month_number);
+            }
+            //other rendering blow
+            for(let i = 0; i <= ending_index;i++) {
+                //ajusting parameters for css
+                let horizontal = i;
+                let vertical = 13.333333333*2;
+
+                //creating and adjusting an element
+                let element = document.createElement("div");
+                element.className = "month"
+                element.innerHTML = `<p>${month}</p>
+                                    <p>${counter++}</p>                                     
+                                    <p>${year}</p>`;
+                
+                //defining varible for css
+                element.style.setProperty("--horizontal", horizontal);
+                element.style.setProperty("--vertical", vertical);
+
+                //adding to parent
+                parent.append(element);
+                element_array.push(element);
+
+                //to stylize the current date
+                if(i == current_day && current_month) {
+                    element.classList.add("current_date_style");
+                }
+
+                //if the month is shifted
+                adjust_p(element, month_number);
+            }
+        }
+        
     }
     return element_array;
 }
