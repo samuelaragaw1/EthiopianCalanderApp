@@ -5,5 +5,5 @@
 - adjust the button[Done]
 - offseting the starting and ending day of the
   month[Done]
-- adjust the highliter for current date
-- pugmue variation besed on year
+- adjust the highliter for current date[Done]
+  pugmue variation besed on year
