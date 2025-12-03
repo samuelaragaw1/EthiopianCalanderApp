@@ -6,17 +6,20 @@ let ele_arry = [element_0, element_1, element_2];
 let ele_index = [0, 1, 2];
 let ethio_month = ["መስከረም", "ጥቅምት", "ኅዳር", "ታህሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
 let days_of_week = ["ሰኞ", "ማክሰኞ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሁድ"];
+
 //grigorian calander parameters
 let grigorian = new Date();
 let g_y = grigorian.getFullYear();
 let g_m = grigorian.getMonth() + 1;
 let g_d = grigorian.getDate();
+
+//calculating current ethiopian year
+//calculating current ethiopian year is leap year or not
 let e_leap = false;
-
-
-//check the ethiopian leap
+let e_y;
 let date_at_sep11;
 if (g_m > 9 || (g_m == 9 && g_d >= 12)) {
+    e_y = g_y - 7;
     if ((g_y - 8)%4 == 0){
         date_at_sep11 = new Date(`9,12,${g_y}`);
     }
@@ -24,34 +27,47 @@ if (g_m > 9 || (g_m == 9 && g_d >= 12)) {
          date_at_sep11 = new Date(`9,11,${g_y}`);
     }
 }
-else {
-    if ((g_y - 9)%4 == 0){
-        date_at_sep11 = new Date(`9,12,${g_y}`);
+else if (g_m == 9 && g_d == 11) {
+    if ((g_y-8)%4 == 0) {
+        e_y = g_y - 8;
+        if ((g_y - 9)%4 == 0){
+            date_at_sep11 = new Date(`9,12,${g_y-1}`);
+        }
+        else {
+            date_at_sep11 = new Date(`9,11,${g_y-1}`);
+        }
     }
     else {
+        e_y = g_y - 7;
         date_at_sep11 = new Date(`9,11,${g_y}`);
     }
 }
+else {
+    e_y = g_y - 8;
+    if ((g_y - 9)%4 == 0){
+        date_at_sep11 = new Date(`9,12,${g_y-1}`);
+    }
+    else {
+        date_at_sep11 = new Date(`9,11,${g_y-1}`);
+    }
+}
+
+//the leap check
+e_leap = e_y%4 == 0;
 
 //check wether the grigorian date is before sept-11 or not
 //ethiopian calander parameters
-let e_y;
 let e_m;
 let index_starting_day = grigorian.getDay() - 1;
-
-//calculate the year
-if (g_m > 9 || (g_m == 9 && g_d >= 11)) {
-    e_y = g_y - 7;
-}
-else {
-    e_y = g_y - 8;
-}
 
 //calculate date
 let time_difference = grigorian.getTime() - date_at_sep11.getTime();
 let days = (((time_difference/1000)/60)/60)/24;
-let date = Math.floor((days)%30 + 1);
-console.log(index_starting_day);
+let date = Math.floor((days)%30) + 1;
+
+console.log(grigorian.getDate());
+console.log(date);
+console.log(days);
 
 //calculate month
 let months = Math.floor(days/30) + 1;
@@ -212,7 +228,6 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
         }
     }
     for (var i = 0; i < ele_index.length; i++) {
-        
         ele_arry[i].style.animationName = "none"; // Reset animation
         ele_arry[i].offsetHeight; // trigger reflow
 
@@ -293,7 +308,7 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
-                                <p>${counter++}</p>                                     
+                                <p>${counter++}</p>
                                 <p>${year}</p>`;
 
             //defining varible for css
@@ -305,7 +320,6 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            
             if((counter == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
             }
@@ -546,4 +560,12 @@ function adjust_p(element, month) {
         element.classList.remove("month");
         element.classList.add("month_shifted");
     }
+}
+
+//calculating the day difference in function
+function daysBetween(date1, date2) {
+        const msPerDay = 1000 * 60 * 60 * 24;
+        const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+        const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+        return Math.floor((utc2 - utc1) / msPerDay);
 }
