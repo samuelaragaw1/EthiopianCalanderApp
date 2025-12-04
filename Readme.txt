@@ -6,6 +6,6 @@
 - offseting the starting and ending day of the
   month[Done]
 - adjust the highliter for current date[Done]
-- the day difference issue fix[still there is problem]
-- pugmue variation besed on year[Done]
-- pugme use for every year
+- the day difference issue fix[Done]
+- pugmue variation based on year[Done]
+- pugme use for every year[Done]

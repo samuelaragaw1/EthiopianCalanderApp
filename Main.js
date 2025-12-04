@@ -51,11 +51,19 @@ else {
         date_at_sep11 = new Date(`9,11,${g_y-1}`);
     }
 }
-
 //the leap check
 e_leap = e_y%4 == 0;
 
-//check wether the grigorian date is before sept-11 or not
+//leap year of ethiopain form truth to numbers
+let eLeapNo;
+if (e_leap){
+    eLeapNo = 6;
+}
+else {
+    eLeapNo = 5;
+}
+
+//check if the grigorian date is before sept-11 or not
 //ethiopian calander parameters
 let e_m;
 let index_starting_day = grigorian.getDay() - 1;
@@ -65,17 +73,23 @@ let time_difference = grigorian.getTime() - date_at_sep11.getTime();
 let days = (((time_difference/1000)/60)/60)/24;
 let date = Math.floor((days)%30) + 1;
 
-console.log(grigorian.getDate());
-console.log(date);
-console.log(days);
 
 //calculate month
 let months = Math.floor(days/30) + 1;
 e_m = months;
 
-//calculating the starting index for renderinf each date  
-let index_starting_month = Math.abs((index_starting_day - (date - 1)))%7;
-let index_ending_month = (30 + index_starting_month - 1)%7;
+//calculating the starting index for rendering each date
+let index_starting_month;
+let index_ending_month;
+if (e_m != 13) {
+    index_starting_month = Math.abs((index_starting_day - (date - 1)))%7;
+    index_ending_month = (30 + index_starting_month - 1)%7;
+}
+else {
+    index_starting_month = Math.abs((index_starting_day - (date - 1)))%7;
+    index_ending_month = (eLeapNo + index_starting_month - 1)%7;
+}
+
 
 //frist render of each boxs
 createElement(ele_arry[1], (e_m===13), ethio_month[months-1], e_y, 6, true, date, e_m-1, index_starting_month, index_ending_month);
@@ -86,22 +100,7 @@ let date_output = `${ethio_month[months-1]} ${date} ${e_y}`;
 let u_m = e_m;
 let u_y = e_y;
 
-
 //adjusting screen the button next
-if (window.innerWidth <= 1200){
-    document.querySelector("button:nth-child(3)").style.marginLeft = (40 - Math.floor((1200 - window.innerWidth)/40)) + "%";
-}
-else{
-    document.querySelector("button:nth-child(3)").style.marginLeft = "40%";
-}
-window.addEventListener('resize', () => {
-    if (window.innerWidth <= 1200){
-        document.querySelector("button:nth-child(3)").style.marginLeft = (40 - Math.floor((1200 - window.innerWidth)/40)) + "%";
-    }
-    else{
-        document.querySelector("button:nth-child(3)").style.marginLeft = "40%";
-    }
-});
 document.querySelector("#date_output").innerHTML = "<div>" + date_output + "</div>"
 
 
@@ -114,8 +113,16 @@ document.querySelector("button:first-child").addEventListener('click', () => {
         u_y--;
     }
 
+    //pugme number calculation 
+    if (u_y%4 == 0) {
+        eLeapNo = 6;
+    }
+    else {
+        eLeapNo = 5;
+    }
+
     //removing each element
-    for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week")) {
+    for(const e of document.querySelectorAll(".month, .month_shifted, .days_of_week")) {
         e.remove();
     }
 
@@ -140,7 +147,6 @@ document.querySelector("button:first-child").addEventListener('click', () => {
             index_ending_month = 6;
         }
 
-
         //adjusting if we can draw it in single line 
         //if it is greater than 4 then it drawable in single line
         if (index_ending_month >= 4 ) {
@@ -148,7 +154,7 @@ document.querySelector("button:first-child").addEventListener('click', () => {
         }
         //if it is less than 4 then it drawable in double line line
         else {
-            index_starting_month = 7 - ((6 - index_ending_month) + 5)%7;
+            index_starting_month = 7 - ((6 - index_ending_month) + eLeapNo)%7;
         } 
     }
 
@@ -187,8 +193,16 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
         u_y++;
     }
 
+    //pugme number calculation 
+    if (u_y%4 == 0) {
+        eLeapNo = 6;
+    }
+    else {
+        eLeapNo = 5;
+    }
+
     //removing previous elements
-    for(e of document.querySelectorAll(".month, .month_shifted, .days_of_week") ) {
+    for(const e of document.querySelectorAll(".month, .month_shifted, .days_of_week")) {
         e.remove();
     }
 
@@ -207,15 +221,18 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
     else {
         if (index_ending_month !== 6) {
             index_starting_month = index_ending_month + 1;
-            index_ending_month = (5 + index_starting_month - 1)%7;
+            index_ending_month = (eLeapNo + index_starting_month - 1)%7;
         }
         else {
             index_starting_month = 0;
-            index_ending_month = (5 + index_starting_month - 1)%7;
+            index_ending_month = (eLeapNo + index_starting_month - 1)%7;
         }
     }
-    // console.log(`ending day: ${index_ending_month}`);
-    // console.log(`starting day: ${index_starting_month}`);
+    if (u_y == 2019 && u_m == 13) {
+        console.log(`ending day: ${index_ending_month}`);
+        console.log(`starting day: ${index_starting_month}`);
+        console.log(`eLeapN: ${eLeapNo}`);
+    }
 
 
     //ele_arry maniplation and animation of container
@@ -247,11 +264,12 @@ document.querySelector("button:nth-child(3)").addEventListener('click', () => {
 
 //rendering each month
 function createElement(parent, pugme, month, year, pugme_number, current_month, current_day, month_number, starting_index, ending_index) {
-    console.log(`current month ${current_month}`);
+    // console.log(`current month ${current_month}`);
     let counter = 1;
     let element_array = [];
-    console.log(`starting index: ${starting_index}`);
-    console.log(`ending index: ${ending_index}`);
+    // console.log(`starting index: ${starting_index}`);
+    // console.log(`ending index: ${ending_index}`);
+    // console.log(`current day ${current_day}`);
     for(let i = 0;i < 7;i++){
         //adjusting parameters for css
         let horizontal = i - 1;
@@ -292,8 +310,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            if((counter == current_day) && (current_month) && (e_y == year)) {
+            if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
+                console.log(counter + " " + i);
             }
 
             //if the month is shifted
@@ -308,8 +327,8 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             let element = document.createElement("div");
             element.className = "month"
             element.innerHTML =  `<p>${month}</p>
-                                <p>${counter++}</p>
-                                <p>${year}</p>`;
+                                  <p>${counter++}</p>
+                                  <p>${year}</p>`;
 
             //defining varible for css
             element.style.setProperty("--horizontal", horizontal);
@@ -320,8 +339,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            if((counter == current_day) && (current_month) && (e_y == year)) {
+            if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
+                console.log(counter + " " + i);
             }
 
             //if the month is shifted
@@ -347,8 +367,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            if((counter == current_day) && (current_month) && (e_y == year)) {
+            if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
+                console.log(counter + " " + i);
             }
             //if the month is shifted
             adjust_p(element, month_number);
@@ -374,10 +395,10 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element_array.push(element);
 
             //to stylize the current date
-            if((counter == current_day) && (current_month) && (e_y == year)) {
+            if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
+                console.log(counter + " " + i);
             }
-
             //if the month is shifted
             adjust_p(element, month_number);
         }
@@ -402,8 +423,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
                 element_array.push(element);
 
                 //to stylize the current date
-                if((counter == current_day) && (current_month) && (e_y == year)) {
-                     element.classList.add("current_date_style");
+                if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
+                    element.classList.add("current_date_style");
+                    console.log(counter + " " + i);
                 }
 
                 //if the month is shifted
@@ -425,8 +447,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
             element.style.setProperty("--vertical", vertical);
 
             //styling current
-            if((counter == current_day) && (current_month) && (e_y == year)) {
+            if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                 element.classList.add("current_date_style");
+                console.log(counter + " " + i);
             }
 
             //adding to parent
@@ -454,8 +477,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
                 element_array.push(element);
 
                 //to stylize the current date
-                if((counter == current_day) && (current_month) && (e_y == year)) {
+                if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                     element.classList.add("current_date_style");
+                    console.log(counter + " " + i);
                 }
 
                 //if the month is shifted
@@ -487,8 +511,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
                 element_array.push(element);
 
                 //to stylize the current date
-                if((counter == current_day) && (current_month) && (e_y == year)) {
+                if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                     element.classList.add("current_date_style");
+                    console.log(counter);
                 }
 
                 //if the month is shifted
@@ -516,8 +541,9 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
                 element_array.push(element);
 
                 //to stylize the current date
-                if((counter == current_day) && (current_month) && (e_y == year)) {
+                if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                     element.classList.add("current_date_style");
+                    console.log(counter);
                 }
                 //if the month is shifted
                 adjust_p(element, month_number);
@@ -543,7 +569,7 @@ function createElement(parent, pugme, month, year, pugme_number, current_month, 
                 element_array.push(element);
 
                 //to stylize the current date
-                if((counter == current_day) && (current_month) && (e_y == year)) {
+                if(((counter-1) == current_day) && (current_month) && (e_y == year)) {
                     element.classList.add("current_date_style");
                 }
                 //if the month is shifted
@@ -560,12 +586,4 @@ function adjust_p(element, month) {
         element.classList.remove("month");
         element.classList.add("month_shifted");
     }
-}
-
-//calculating the day difference in function
-function daysBetween(date1, date2) {
-        const msPerDay = 1000 * 60 * 60 * 24;
-        const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
-        const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
-        return Math.floor((utc2 - utc1) / msPerDay);
 }
